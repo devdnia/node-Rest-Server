@@ -17,12 +17,18 @@ const usuariosGet = (req = request, res = response) => {
     });
 }
 
-const usuariosPost = async(req, res) => {
+const usuariosPost = async(req, res = response ) => {
 
     const { nombre, correo, password, rol } = req.body;
     const usuario = new Usuario( { nombre, correo, password, rol } );
 
-    // Verificar se correo existe
+    // Verificar si ya existe
+    const existeEmail = await Usuario.findOne({ correo });
+    if( existeEmail ){
+        return res.status(400).json({
+            msg: 'El correo ya está registrado'
+        })
+    }
     
 
     // Encriptar la contraseña
