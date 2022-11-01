@@ -3,6 +3,7 @@ const bcryptjs = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
 
+
 const usuariosGet = (req = request, res = response) => {
 
     const { q, nombre = 'No name', apikey, page = 1, limit } = req.query;
@@ -34,13 +35,24 @@ const usuariosPost = async(req, res = response ) => {
         usuario
     });
 }
-const usuariosPut = (req, res) => {
+const usuariosPut = async(req, res) => {
 
     const { id } = req.params;
+    const { _id, password, google, correo, ...resto } = req.body;
+
+    // TODO: Validar contra BD
+    if ( password ) {
+        // Encriptar la contraseña
+        const salt = bcryptjs.genSaltSync();
+        resto.password = bcryptjs.hashSync( password, salt );
+    }
+
+    const usuario = await Usuario.findByIdAndUpdate( id, resto );
+
 
     res.json({
         msg: 'put API - controlador',
-        id
+        usuario
     });
 }
 const usuariosPatch = (req, res) => {
