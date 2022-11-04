@@ -67,10 +67,16 @@ const usuariosPatch = (req, res) => {
         msg: 'patch API - controlador'
     });
 }
-const usuariosDelete = (req, res) => {
-    res.json({
-        msg: 'delete API - controlador'
-    });
+const usuariosDelete = async(req = request, res = response ) => {
+
+    const { id } = req.params;
+
+    // Borrado fisicamente
+    // const usuario = await Usuario.findByIdAndDelete( id );
+
+    // Borrado con estado, esta en la base de datos
+    const usuario = await Usuario.findByIdAndUpdate( id, { estado: false });
+    res.json( usuario);
 }
 
 module.exports = {
